@@ -1,9 +1,14 @@
 FROM alpine:latest
 
+LABEL Maintainer="Ernesto Pérez <eperez@isotrol.com>" \
+      Name="Forticlient_cli" \
+      Description="Imágen con el servicio forticlient_cli" \
+      Version="0.1.0"
+
 # Install dependency
 RUN echo '@testing http://nl.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositories \
-    && apk add --no-cache ca-certificates wget iproute2 ppp ppp-daemon bash expect file libgcc libstdc++ gcompat@testing 
-    
+    && apk add --no-cache ca-certificates wget iproute2 ppp ppp-daemon bash expect file libgcc libstdc++ gcompat@testing
+
 
 WORKDIR /opt
 

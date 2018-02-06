@@ -1,9 +1,12 @@
 #!/bin/sh
 
-if [ -z "$VPNADDR" -o -z "$VPNUSER" -o -z "$VPNPASS" ]; then
+if [ -z "$VPNADDR" ] || [ -z "$VPNUSER" ] || [ -z "$VPNPASS" ]; then
   echo "Variables VPNADDR, VPNUSER and VPNPASS must be set."; exit;
 fi
 
+if [ -z "$CERTFILE" ] || [ -z "$CERTPASS" ]; then
+echo "Variables CERTFILE and CERTPASS must be set" exit;
+fi
 export VPNTIMEOUT=${VPNTIMEOUT:-40}
 
 # Setup masquerade, to allow using the container as a gateway

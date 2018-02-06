@@ -12,16 +12,6 @@ The container uses the forticlientsslvpn_cli linux binary to manage ppp interfac
 
 All of the container traffic is routed through the VPN, so you can in turn route host traffic through the container to access remote subnets.
 
-### Manual Build
-
-```bash
-# Build docker image
-docker build --no-cache https://github.com/kj54321/docker-forticlient.git -t forticlient
-
-# Run built docker
-docker create --name forticlient forticlient:latest \
-  -- ...other parameters...
-```
 
 ### Linux
 
@@ -54,37 +44,62 @@ ip route add 10.201.0.0/16 via 172.16.0.3
 # Access remote host from the subnet
 ssh 10.201.8.1
 ```
+## Docker environment file.
 
-### OSX
-
-```
-UPDATE: 2017/06/10
-Docker's microkernel still lassk ppp interface support, so you'll need to use a docker-machine VM.
-```
+Create file Variables.
 
 ```bash
-# Create a docker-machine and configure shell to use it
-docker-machine create fortinet --driver virtualbox
-eval $(docker-machine env fortinet)
+vim .env
+```
+```bash
+VPNADDR=hostvpn:port
+VPNUSER=username
+VPNPASS=userpass
+CERTFILE=/srv/pkcs12.pem
+CERTPASS=certpass
+```
 
-# Start the priviledged docker container on its host network
-docker run -it --rm \
-  --volume /path/certfile:/srv \
-  --privileged --net host \
-  -e VPNADDR=host:port \
-  -e VPNUSER=me@domain \
-  -e VPNPASS=secretuser \
-  -e CERTFILE=/srv/pk12file.pem \
-  -e CERTPASS=secretcert \
-  --name yourname \
+Run docker with env file.
+
+```bash
+docker run -d --rm -privileged \
+  --env-file ./.env
+  --net myvpn --ip 172.16.0.3 \
+  --name vpn-forticlient \
+  -v /path/dircertfile.pem:/srv/pkcs12.pem \
   ieperez/forticlient
-
+```
 # Add route for you remote subnet (ex. 10.201.0.0/16)
-sudo route add -net 10.201.0.0/16 $(docker-machine ip fortinet)
+ip route add 10.201.0.0/16 via 172.16.0.3
 
 # Access remote host from the subnet
 ssh 10.201.8.1
+
+## Docker secret.
+
+Manage password user and password certificate with docker secret.
+
+Secrets use:
+
+User password:
+```bash
+echo "password" | docker secret create vpn-user-pass -
 ```
+Example with labels:
+```bash
+echo "dkljdlaskjdlkasjdjsa" | docker secret create -l user.edu.ext -l education -l forticlient vpn-user-edu-pass -
+```
+
+Certificate password:
+```bash
+echo "password" | docker secret create vpn-cert-pass -
+```
+Example with labels:
+```bash
+echo "lñkñlkñlkñlkñljñljjkkl" | docker secret create -l user.edu.ext -l pkcs12 -l education -l forticlient vpn-cert-edu-pass -
+```
+
+Docker-compose....
 
 ## Misc
 

@@ -1,9 +1,7 @@
 # forticlient
 
-## Update (17/11/25)
-- upgrade client version to 4.4.2333
-- change base os to alpine linux
-- parameters optimization
+## Update (06/02/2018)
+-   Add support pkcs12 certificate.
 
 Connect to a FortiNet VPNs through docker
 
@@ -41,11 +39,14 @@ docker network create --subnet=172.16.0.0/28 \
 docker run -d --rm \
   --privileged \
   --net myvpn --ip 172.16.0.3 \
+  --volume /path/dircertfile:/srv
   -e VPNADDR=host:port \
   -e VPNUSER=me@domain \
-  -e VPNPASS=secret \
+  -e VPNPASS=secretuser \
+  -e CERTFILE=/srv/pk12file.pem \
+  -e CERTPASS=secretcert \
   --name yourname \
-  forticlient
+  ieperez/forticlient
 
 # Add route for you remote subnet (ex. 10.201.0.0/16)
 ip route add 10.201.0.0/16 via 172.16.0.3
@@ -68,11 +69,15 @@ eval $(docker-machine env fortinet)
 
 # Start the priviledged docker container on its host network
 docker run -it --rm \
+  --volume /path/certfile:/srv \
   --privileged --net host \
   -e VPNADDR=host:port \
   -e VPNUSER=me@domain \
-  -e VPNPASS=secret \
-  forticlient
+  -e VPNPASS=secretuser \
+  -e CERTFILE=/srv/pk12file.pem \
+  -e CERTPASS=secretcert \
+  --name yourname \
+  ieperez/forticlient
 
 # Add route for you remote subnet (ex. 10.201.0.0/16)
 sudo route add -net 10.201.0.0/16 $(docker-machine ip fortinet)

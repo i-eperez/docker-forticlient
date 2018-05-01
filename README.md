@@ -62,7 +62,7 @@ CERTPASS=certpass
 Run docker with env file.
 
 ```bash
-docker run -d --rm -privileged \
+docker run -d --rm --privileged \
   --env-file ./.env
   --net myvpn --ip 172.16.0.3 \
   --name vpn-forticlient \
@@ -70,10 +70,38 @@ docker run -d --rm -privileged \
   ieperez/forticlient
 ```
 # Add route for you remote subnet (ex. 10.201.0.0/16)
+```bash
 ip route add 10.201.0.0/16 via 172.16.0.3
-
+```
 # Access remote host from the subnet
+```bash
 ssh 10.201.8.1
+```
+
+## Proxy Socks
+
+Forticlient + Proxy Socks (SSH)
+
+Modify image name "ieperez/forticlient" to "ieperez/forticlient:proxy"
+
+Example:
+
+```bash
+docker run -d --rm --privileged \
+  --env-file ./.env
+  --net myvpn --ip 172.16.0.3 \
+  --name vpn-forticlient \
+  -v /path/dircertfile.pem:/srv/pkcs12.pem \
+  ieperez/forticlient:proxy
+```
+
+Configure you favorite browser with proxy socks 5.
+
+Proxy ip: `172.16.0.3`
+
+Proxy port: `8123`
+
+    [x] DNS proxy SOCKS v5
 
 ## Docker secret.
 

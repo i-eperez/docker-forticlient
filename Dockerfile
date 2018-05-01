@@ -6,8 +6,8 @@ LABEL Maintainer="Ernesto Pérez <eperez@isotrol.com>" \
       Version="0.1.0"
 
 # Install dependency
-RUN echo '@testing http://nl.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositories \
-    && apk add --no-cache ca-certificates wget iproute2 ppp ppp-daemon bash expect file libgcc libstdc++ gcompat@testing
+RUN echo '@community http://nl.alpinelinux.org/alpine/edge/community' >> /etc/apk/repositories \
+    && apk add --update --no-cache ca-certificates wget iproute2 ppp ppp-daemon bash expect file libgcc libstdc++ gcompat@community
 
 
 WORKDIR /opt

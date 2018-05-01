@@ -1,9 +1,9 @@
 FROM ieperez/forticlient
 
-RUN apk --update add openssh \
+RUN apk --update --no-cache add openssh \
     && ssh-keygen -A \
     && ssh-keygen -N '' -b 4096 -t rsa -f /root/.ssh/id_rsa \
     && cat /root/.ssh/id_rsa.pub > /root/.ssh/authorized_keys
 
 EXPOSE 8123
-CMD [ "/usr/sbin/sshd && ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -D 8123 -f -C -q -N localhost" ]
+CMD /usr/sbin/sshd && ssh -fq -ND 0.0.0.0:8123 -o StrictHostKeyChecking=no localhost && /start.sh

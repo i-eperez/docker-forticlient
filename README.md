@@ -95,7 +95,7 @@ docker run -d --rm --privileged \
   ieperez/forticlient:proxy
 ```
 
-Configure you favorite browser with proxy socks 5.
+Configure your favorite browser with proxy socks 5.
 
 Proxy ip: `172.16.0.3`
 
